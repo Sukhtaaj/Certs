@@ -1,3 +1,5 @@
+<html>
+<body>
 <?php
 
 require_once('../library/odf.php');
@@ -23,11 +25,11 @@ move_uploaded_file($_FILES["file"]["tmp_name"],"uploads/" . $_FILES["file"]["nam
 
 
 //Condition check for redundancy of data to be added to database. 
-$check = mysql_query("SELECT * FROM data");
+$check = mysql_query("SELECT * FROM `data`");
 
 while($row = mysql_fetch_array($check))
 {
-                 if($name == $row['sal'] && $firstName == $row['1st_name'] && $middleName == $row['middle_name'] && 
+                 if($name == $row['sal'] && $firstName == $row['first_name'] && $middleName == $row['middle_name'] && 
                   $lastName == $row['last_name'] && $institute == $row['institute'] && $city == $row['city'] && 
                   $state == $row['state'] && $photo == $row['photo'])
                            {
@@ -38,12 +40,12 @@ while($row = mysql_fetch_array($check))
 //Inserting data into database after redundancy check. 
 if($var == 0)
 {
-                  mysql_query("INSERT into data VALUES('$name','$firstName','$middleName','$lastName','$institute','$city','$state','$photo')");
+                  mysql_query("INSERT into `data` VALUES('','$name','$firstName','$middleName','$lastName','$institute','$city','$state','$photo')");
 }
 
 //Selecting the user entered data from database and replacing with the tags in odt document. 
 
-$result = mysql_query("SELECT * FROM data WHERE sal = '$name' AND 1st_name = '$firstName' AND middle_name = '$middleName'
+$result = mysql_query("SELECT * FROM `data` WHERE sal = '$name' AND first_name = '$firstName' AND middle_name = '$middleName'
  AND last_name = '$lastName' AND institute = '$institute' AND city = '$city' AND state = '$state' AND photo = '$photo'");
 
 $article = $odf->setSegment('articles');
@@ -57,9 +59,9 @@ while($row = mysql_fetch_array($result))
 		
 		//name
                 if($row['middle_name']==NULL)
-		         $article->nameArticle(" ".$row['sal']." ".$row['1st_name']." ".$row['last_name']);
+		         $article->nameArticle(" ".$row['sal']." ".$row['first_name']." ".$row['last_name']);
 		else
-                         $article->nameArticle(" ".$row['sal']." ".$row['1st_name']." ".$row['middle_name']." ".$row['last_name']); 
+                         $article->nameArticle(" ".$row['sal']." ".$row['first_name']." ".$row['middle_name']." ".$row['last_name']); 
 		//department
 		$article->deptArticle($row['institute'].", ".$row['city']);
 	
@@ -68,7 +70,25 @@ while($row = mysql_fetch_array($result))
 
 $odf->mergeSegment($article);
 
+
 // We export the file
-$odf->exportAsAttachedFile();
- 
+
+$odf -> saveToDisk("cert.odt"); 
 ?>
+<form action="cert.odt">
+<input type="submit" value="Download ODT">
+</form>
+
+<form action="pdf.php">			
+<input type="submit" value="Download PDF">
+</form>
+
+<form action="next.html">
+<input type="submit" value="Generate Another Certificate">
+</form>
+<form action="index.html">
+<input type="submit" value="Goto First Page">
+</form>
+
+</body>
+</html>
