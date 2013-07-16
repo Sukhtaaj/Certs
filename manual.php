@@ -40,7 +40,7 @@ if (($_FILES["file"]["type"] == "image/gif")
 || ($_FILES["file"]["type"] == "image/x-png")
 || ($_FILES["file"]["type"] == "image/png"))
 {
-if($_FILES["file"]["size"] > 1000000)
+if($_FILES["file"]["size"] > 400000)
 {
 echo "<center><strong>Image Size Exceeded...</strong></center>";
 sleep (2);
@@ -132,7 +132,11 @@ while($row = mysql_fetch_array($result))
 		else
                          $article->nameArticle(" ".$row['sal']." ".$row['first_name']." ".$row['middle_name']." ".$row['last_name']); 
 		//department
-		$article->deptArticle($row['institute'].", ".$row['city']);
+		if($row['city']==NULL)
+			$article->deptArticle($row['institute'].", ".$row['state']);
+		else
+			$article->deptArticle($row['institute'].", ".$row['city']);
+
 	
 	$article->merge();	
 		
@@ -146,36 +150,37 @@ $odf->mergeSegment($article);
 $odf -> saveToDisk("cert.odt");
 
 //copying the file to be converted
-copy("cert.odt", "../../Convert/cde-root/home/sukhdeep/Desktop/certificate.odt");
+copy("cert.odt", "../../cde-package/cde-root/home/sukhdeep/Desktop/certificate.odt");
 
 //changing Directory
-chdir('../../Convert/cde-root/home/sukhdeep');
+chdir('../../cde-package/cde-root/home/sukhdeep');
 
 //Command for conversion to PDF
 $myCommand = "./libreoffice.cde --headless -convert-to pdf Desktop/certificate.odt -outdir Desktop/";
 exec ($myCommand);
 
 
-copy("Desktop/".str_replace(".odt", ".pdf", "certificate.odt"), "../../../../Demo/testReduce/pdf/".str_replace(".odt", ".pdf", "certificate.odt"));
+copy("Desktop/".str_replace(".odt", ".pdf", "certificate.odt"), "../../../../Demo/test/pdf/".str_replace(".odt", ".pdf", "certificate.odt"));
 
 
 
 echo   '<html>
-	<body>
+	<body background="html/bck.jpg">
+	<h1>Your Certificate has been Generated!</h1>
+	<center><p>
 	<form action="cert.odt">
 	<input type="submit" value="Download ODT">
 	</form>
-
 	<form action="pdf/certificate.pdf">
 	<input type="submit" value="View/Download PDF">
-	</form>
-	
-	<form action="option.php" method = "GET">
+	</form></p>	
+	<form action="option.php?var=manual" method = "GET">
 	<input type="submit" value="Generate Another Certificate">
 	</form>
-	<form action="index.php">
+	<form action="index.html">
 	<input type="submit" value="Goto First Page">
 	</form>
+	</center>
 	</body>
 	</html>';
 
@@ -236,7 +241,7 @@ exit;
 </style>
 
 </head>
-<body>
+<body background="html/bck.jpg">
 
 <div class="container">
 <div class="row">
@@ -254,7 +259,7 @@ exit;
 			<input type="hidden" id="y" name="y" />
 			<input type="hidden" id="w" name="w" />
 			<input type="hidden" id="h" name="h" />
-			<input type="submit" value="Crop Image" class="btn btn-large btn-inverse" />
+			<input type="submit" value="Generate Certificate" class="btn btn-large btn-inverse" />
 		</form>
 
 		<p>

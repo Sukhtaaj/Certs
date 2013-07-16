@@ -1,11 +1,10 @@
 <?php
 
 require_once('../library/odf.php');
-
+$sel = $_GET["cert"];    //Represents Selection
+$odf = new odf("odt/$sel.odt");
 if($_SERVER['REQUEST_METHOD'] == 'POST')
-{
-$odf = new odf("certify.odt");
- 
+{ 
 /* storing data from html form to php variables*/
 $insName = $_POST["in"];
 $aidedStatus = $_POST["as"];
@@ -36,7 +35,8 @@ $odf -> setvars('d3',$des3);
 
 $odf -> saveToDisk("new.odt");
 
-echo '<center>
+echo '  <body background="html/bck.jpg">
+	<center>
 	<h2>Institute Details Saved Succesfully!</h2>
 	<h3>Please Select Next Option</h3>
 	<form action = "option.php?var=manual" method = "GET">
@@ -47,10 +47,12 @@ echo '<center>
 	<input type=hidden name=var value=csv>
 	<input type="submit" value="Upload CSV file">
 	</form>
+	</center>
 	<p><h4>Note:</h4>
 	<li><strong>Manual:</strong> Generates Certificate for One Candidate by manually filling Candidate Details.</li>
 	<li><strong>UPload CSV:</strong> This feature allow you to generate Batch certificates by simply taking csv file (for Candidate Details) & a compressed file containing images. 
-      </center>';
+      
+	</body>';
 	exit;
 }
 
@@ -199,7 +201,7 @@ if (check12==null || check12=="")
 
 	</head>
 
-<body>
+<body background="html/bck.jpg">
 			<center>
     			<header><h1>Institute Details</h1></header>
 			<table>
@@ -225,7 +227,7 @@ if (check12==null || check12=="")
  <td><input type=text name=e></td></tr>
 <tr>
 <tr><td> </td></tr> 
- <td>check5:</td> 
+ <td>Topic:</td> 
  <td><input type=text name=t></td></tr>
 <tr>
 <tr><td> </td></tr> 
@@ -253,7 +255,7 @@ if (check12==null || check12=="")
  <td><input type=text name=d3></td></tr>
 <tr> 
 <tr><td> </td></tr>
-</table><input type=submit name=Submit value=Submit>
+</table><input class="btn btn-large btn-primary" type=submit name=Submit value=Submit>
 </center>
 </form>
 </br>

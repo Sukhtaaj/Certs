@@ -7,6 +7,7 @@ require_once('../library/odf.php');
 require_once('dbase.php');
 
 $csv = $_FILES["file"]["name"];
+/******************************** csv File input validation********************************************/
 
 $url = "<meta http-equiv='Refresh' content='1; URL=option.php?var=csv'>";
 if($csv == NULL)
@@ -58,7 +59,7 @@ if($var==0)
 fclose($file); 
 //echo 'file '.$csv.' imported successfully.';
 unlink("$csv");
-//}
+
   
   $odf = new odf("new.odt");
 
@@ -97,6 +98,7 @@ unlink("$csv");
 }
 
 $dest =  strtok($file,".");
+unlink("$file");
 
 //Selecting the user entered data from database and replacing with the tags in odt document. 
 
@@ -108,10 +110,10 @@ while($row = mysql_fetch_array($result))
 	
 		 //image
             
-                $pic = "$dest/".$row['photo'].".jpg";
+                $pic = "$dest/".$row['photo'];
 		if(!file_exists($pic))
                   {
-                  $pic = "Photos/image.gif";
+                  $pic = "uploads/image.gif";
                  }
 
                 $article->setImage('pic',$pic,4);
@@ -122,7 +124,10 @@ while($row = mysql_fetch_array($result))
 		else
                          $article->nameArticle(" ".$row['sal']." ".$row['first_name']." ".$row['middle_name']." ".$row['last_name']); 
 		//department
-		$article->deptArticle($row['institute'].", ".$row['city']);
+		if($row['city']==NULL)
+			$article->deptArticle($row['institute'].", ".$row['state']);
+		else
+			$article->deptArticle($row['institute'].", ".$row['city']);
 	
 	$article->merge();			
 }	
@@ -132,36 +137,31 @@ $odf->mergeSegment($article);
 
 // We save the file
 $odf -> saveToDisk("cert.odt"); 
-copy("cert.odt", "../../Convert/cde-root/home/sukhdeep/Desktop/certificate.odt");
-$var1 = chdir('../../Convert/cde-root/home/sukhdeep');
+copy("cert.odt", "../../cde-package/cde-root/home/sukhdeep/Desktop/certificate.odt");
+$var1 = chdir('../../cde-package/cde-root/home/sukhdeep');
 //echo $var1;
 $myCommand = "./libreoffice.cde --headless -convert-to pdf Desktop/certificate.odt -outdir Desktop/";
 $var2 = exec ($myCommand);
 //echo $var2;
 
-copy("Desktop/".str_replace(".odt", ".pdf", "certificate.odt"), "../../../../Demo/testReduce/pdf/".str_replace(".odt", ".pdf", "certificate.odt"));
-$files1 = scandir('Desktop');
-//my files that I generated all happened to start with a number.
-$pattern = '/^[0-9]/';
-foreach ($files1 as $value)
-{
-preg_match($pattern, $value, $matches);
-if(count($matches) > 0)
-{
-unlink("Desktop/".$value);
-}
-}
-echo   '<form action="cert.odt">
+copy("Desktop/".str_replace(".odt", ".pdf", "certificate.odt"), "../../../../Demo/test/pdf/".str_replace(".odt", ".pdf", "certificate.odt"));
+
+echo   '<h1>Your Certificate has been Generated!<h/1>
+	<body background="html/bck.jpg">
+	<center>
+	<form action="cert.odt">
 	<input type="submit" value="Download ODT">
 	</form>
 
 	<form action="pdf/certificate.pdf">
-	<input type="submit" value="Download PDF">
+	<input type="submit" value="View/Download PDF">
 	</form>
 
-	<form action="index.php">
+	<form action="index.html">
 	<input type="submit" value="Goto First Page">
-	</form>';
+	</form>
+	</center>
+	</body>';
 
 exit;
 
