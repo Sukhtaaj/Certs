@@ -1,91 +1,138 @@
+
 <html>
-<body>
-<?php
-require_once('../library/odf.php');
-require_once('dbase.php');
+<head>
 
-$odf = new odf("certify.odt");
- /* storing data from html form to php variables*/
-$insName = $_POST["in"];
-$aidedStatus = $_POST["as"];
-$insTagline = $_POST["it"];
-$affilliation = $_POST["a"];
-$event = $_POST["e"];
-$topic = $_POST["t"];
-$sign1 = $_POST["s1"];
-$sign2 = $_POST["s2"];
-$sign3 = $_POST["s3"];
-$des1 = $_POST["d1"];
-$des2 = $_POST["d2"];
-$des3 = $_POST["d3"];
-$var = 0;
-
-
-if($insName == NULL && $aidedStatus == NULL && $insTagline == NULL && 
-                  $affilliation == NULL && $event == NULL && $topic == NULL && 
-                  $sign1 == NULL && $des1 == NULL && 
-                  $sign2 == NULL && $des2 == NULL && 
-                  $sign3 == NULL && $des3 == NULL)
+<html>
+	<head>		
+		<title>Candidate Details</title>
+		<h1><center> Candidate Details Form</center></h1>
+<script>
+function validateForm()
 {
-       $result = mysql_query("SELECT * FROM `Institute` ORDER BY id DESC LIMIT 1");
+var check1=document.forms["new"]["fname"].value;
+if (check1==null || check1=="")
+   {
+        alert("First Name must be filled out");
+	return false;
+   }
+	if (!check1.match(/^[A-Za-z]/))	    
+   {
+		alert("Numbers not allowed in field First Name");
+		return false;
+   }
+var check2=document.forms["new"]["mname"].value;
+	
+if (check2.match(/^[0-9]/))
+    {
+		alert("Numbers not allowed in field Middle Name");
+		return false;
+    } 
+var check3 =document.forms["new"]["lname"].value;
+if (check3==null || check3=="")
+   {
+        alert("Last Name must be filled out");
+	return false;
+	}
+	if (!check3.match(/^[A-Za-z]/))
+	    {
+		alert("Numbers not allowed in field Last Name");
+		return false;
+}
+var check4=document.forms["new"]["ins"].value;
+if (check4==null || check4=="")
+   {
+        alert("Institute must be filled out");
+	return false;
+	}
+	if (!check4.match(/^[A-Za-z]/))
+	    {
+		alert("Numbers not allowed in field Institute");
+		return false;
+}
+var check5=document.forms["new"]["city"].value;
+if (check5==null || check5=="")
+   {
+        alert("City must be filled out");
+	return false;
+	}
+	if (!check5.match(/^[A-Za-z]/))
+	    {
+		alert("Numbers not allowed in field City");
+		return false;
+}
+var check6=document.forms["new"]["state"].value;
+if (check6==null || check6=="")
+   {
+        alert("State must be filled out");
+	return false;
+	}
+	if (!check6.match(/^[A-Za-z]/))
+	    {
+		alert("Numbers not allowed in field State");
+		return false;
+}
+
+
+}
+</script>
+
+
+<?php
+if($_SERVER['REQUEST_METHOD'] == 'GET' && $_GET["var"] == "manual")
+
+{
+echo '<center><h2>(Manual Entry)</h2><table>
+<form name=new action="manual.php" method="post" enctype="multipart/form-data" onSubmit="return validateForm();">
+<tr>
+<tr><td>Name Initial:</td>
+		    <td><select name ="sal">
+  			<option value="Mr.">Mr.</option>
+  			<option value="Ms.">Ms.</option>
+  			<option value="Mrs.">Mrs.</option>
+			</select></td></tr>
+<tr><td>First Name:</td> 
+ <td><input type="text" name="fname"></td></tr>
+<tr><td>Middle Name:</td> 
+ <td><input type="text" name="mname"></td></tr>
+<tr><td>Last Name:</td> 
+ <td><input type="text" name="lname"></td></tr>
+<tr><td>Institution:</td> 
+ <td><input type="text" name="ins"></td></tr>
+<tr><td>City:</td> 
+ <td><input type="text" name="city"></td></tr>
+<tr><td>state:</td> 
+ <td><input type="text" name="state"></td></tr>
+<tr><td>photo:</td> 
+ <td><input type="file" name="file" id="file"></td></tr>
+<tr><td><input type="submit" value ="GENERATE"></td></tr>
+</table>
+</form>
+</center>';
+exit;
+}
+
+elseif($_SERVER['REQUEST_METHOD'] == 'GET' && $_GET["var"] == "csv")
+{
+echo '<center><h2>(CSV File Input)</h2>
+	<h4>Data format in (.csv) file</h4>
+	<p> <li> Initials,Firstname,Middlename,lastname,institute,city,state,photo</li>
+	<li>Data for each field must be enclosed in double quotes(").</li>
+	<li>comma(,) must be used as separator.</li>
+	</p><br><br>
+<form action=csv.php method = "POST" action="csv.php" enctype="multipart/form-data">
+<strong>Select your (.csv) file: </strong><input type="file" name="file"><br><br>
+<p>Photos folder must be in <strong>(.zip)</strong> or <strong>(.tar.gz)</strong> format.<br><br> 
+Select :<input type="file" name="photo">
+<input type="submit" value="Next">
+</form>
+</center>';
+exit;
 }
 else
 {
-$check = mysql_query("SELECT * FROM `Institute`");
-
-while($row = mysql_fetch_array($check))
-{
-                 if($insName == $row['Institution_Name'] && $aidedStatus == $row['Aided_Status'] && $insTagline == $row['Institute_Tagline'] && 
-                  $affilliation == $row['Affilliation'] && $event == $row['Event'] && $topic == $row['Topic'] && 
-                  $sign1 == $row['Sign1'] && $des1 == $row['Desg1'] && 
-                  $sign2 == $row['Sign2'] && $des2 == $row['Desg2'] && 
-                  $sign3 == $row['Sign3'] && $des3 == $row['Desg3'])
-                           {
-                                $var++;
-                           }
+echo "<center><strong>Something Wrong Occured!</strong></center>";
+echo "<meta http-equiv='Refresh' Content:'1; URL:index.php'>";
+exit;
 }
 
-//Inserting data into database after redundancy check. 
-if($var == 0)
-{
-		
-  mysql_query("INSERT into `Institute` VALUES                      ('','$insName','$aidedStatus','$insTagline','$affilliation','$event','$topic','$sign1','$des1','$sign2','$des2','$sign3','$des3')");
-echo "Done";
-}
-
-
-//Selecting the user entered data from database 
-
-$result = mysql_query("SELECT * FROM `Institute` WHERE Institution_Name = '$insName' && Aided_Status = '$aidedStatus' && Institute_Tagline = '$insTagline' && 
-                  Affilliation = '$affilliation' && Event = '$event' && Topic = '$topic' && 
-                  Sign1 = '$sign1' && Desg1 = '$des1' && 
-                  Sign2 = '$sign2' && Desg2 = '$des2' && 
-                  Sign3 = '$sign3' && Desg3 = '$des3'");
-}
-$res = mysql_fetch_array($result);
-
-$odf -> setvars('College',$res['Institution_Name']);
-$odf -> setvars('status',$res['Aided_Status']);
-$odf -> setvars('tagline',$res['Institute_Tagline']);
-$odf -> setvars('other',$res['Affilliation']);
-$odf -> setvars('sub',$res['Event']);
-$odf -> setvars('Event',$res['Topic']);
-$odf -> setvars('sign1',$res['Sign1']);
-$odf -> setvars('sign2',$res['Sign2']);
-$odf -> setvars('sign3',$res['Sign3']);
-$odf -> setvars('d1',$res['Desg1']);
-$odf -> setvars('d2',$res['Desg2']);
-$odf -> setvars('d3',$res['Desg3']);
-
-
-$odf -> saveToDisk("new.odt");
 ?>
-<h3>Please Select Next Option</h3>
-<form action="manual.html">
-<input type="submit" value = "Fill Candidate Details Manually">
-</form>
-<form action="csv.html">
-<input type="submit" value="Upload CSV file">
-</form>
-</body>
-</html>
