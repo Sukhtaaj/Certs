@@ -31,32 +31,52 @@ $_SESSION['photo'] = $photo;
 
 /*************************************** Image Validation********************************************/
 $url = "<meta http-equiv='Refresh' content='1; URL=option.php?var=manual'>";
-if (($_FILES["file"]["type"] == "image/gif")
-|| ($_FILES["file"]["type"] == "image/jpeg")
-|| ($_FILES["file"]["type"] == "image/jpg")
-|| ($_FILES["file"]["type"] == "image/pjpeg")
-|| ($_FILES["file"]["type"] == "image/x-png")
-|| ($_FILES["file"]["type"] == "image/png"))
+if($_FILES["file"]["size"] > 400144) //Size validation less than 400kb
 {
-if($_FILES["file"]["size"] > 400144)//...............................................................................................Change
-{
-echo "<center><h1>Image Size Exceeded...</h1></center>";
+echo "<center><strong>Image Size Exceeded...</strong></center>";
 sleep (2);
 echo $url;
 exit;
 }
-}
+//moving the uploaded file to directory
+move_uploaded_file($_FILES["file"]["tmp_name"],"uploads/" . $_FILES["file"]["name"]);
+$nphoto = "uploads/$photo";
+
+//Checking the type of uploaded file
+
+if ($_FILES["file"]["type"] == "image/gif")
+$origin = imagecreatefromgif($nphoto);
+
+elseif($_FILES["file"]["type"] == "image/jpeg")
+$origin = imagecreatefromjpeg($nphoto);
+
+elseif($_FILES["file"]["type"] == "image/jpg")
+$origin = imagecreatefromjpeg($nphoto);
+
+elseif($_FILES["file"]["type"] == "image/png")
+$origin = imagecreatefrompng($nphoto);
+
+//I case of any other format of uploaded file
 else
 {
-echo "<center><h1>No OR Invalid Image File...</h1></center>";
+echo "<center><strong>No OR Invalid Image File...</strong></center>";
 sleep (2);
 echo $url;
 exit;
 }
 
-//Moving uploaded file to uploads directory on server.
-move_uploaded_file($_FILES["file"]["tmp_name"],"uploads/" . $_FILES["file"]["name"]);
-copy("uploads/".$_FILES["file"]["name"],"uploads/src.jpg");
+$originWidth = imagesx($origin);   //Width of original uploaded image
+$originHeight = imagesy($origin);  //Height of original uploaded image
+
+//creating another image to which the origin is copied
+$destination = imageCreateTrueColor( $originWidth, $originHeight );
+
+//Copying the original uploaded image to new created one
+imagecopyresampled($destination,$origin,0,0,0,0,$originWidth,$originHeight,$originWidth,$originHeight);
+
+//Finally saving the image as jpeg in directory
+imagejpeg($destination,"uploads/src.jpg",100);
+
 }
 
 
@@ -76,7 +96,7 @@ else //Else Condition	`
         $targ_w = $targ_h = 500;
 	$jpeg_quality = 100;
 
-	$src = "uploads/$photo";
+	$src = "uploads/src.jpg";
 	$img_r = imagecreatefromjpeg($src);
 	$dst_r = ImageCreateTrueColor( $targ_w, $targ_h );
 
@@ -84,9 +104,6 @@ else //Else Condition	`
 	$targ_w,$targ_h,$_GET['w'],$_GET['h']);
 
 	imagejpeg($dst_r,"uploads/cropped/$photo",$jpeg_quality);
-
-
-//$article = $odf->setSegment('articles');
 	
 		 //image
             
@@ -110,10 +127,6 @@ else //Else Condition	`
 			$odf->setVars('deptArticle',$ins.", ".$city);
 
 
-	
-//	$article->merge();	
-
-//$odf->mergeSegment($article);
 
 // We save the file
 
