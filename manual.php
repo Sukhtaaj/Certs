@@ -2,13 +2,11 @@
 <?php
 
 require_once('../library/odf.php');
-require_once('dbase.php');
 
 $odf = new odf("new.odt");
 if ($_SERVER['REQUEST_METHOD'] == 'POST')  //My condition;
 {
 // Assigning Form data to variables.
-$var =0;
 $name = $_POST["sal"];
 $firstName = $_POST["fname"];
 $middleName = $_POST["mname"];
@@ -40,9 +38,9 @@ if (($_FILES["file"]["type"] == "image/gif")
 || ($_FILES["file"]["type"] == "image/x-png")
 || ($_FILES["file"]["type"] == "image/png"))
 {
-if($_FILES["file"]["size"] > 400000)
+if($_FILES["file"]["size"] > 400144)//...............................................................................................Change
 {
-echo "<center><strong>Image Size Exceeded...</strong></center>";
+echo "<center><h1>Image Size Exceeded...</h1></center>";
 sleep (2);
 echo $url;
 exit;
@@ -50,41 +48,22 @@ exit;
 }
 else
 {
-echo "<center><strong>No OR Invalid Image File...</strong></center>";
+echo "<center><h1>No OR Invalid Image File...</h1></center>";
 sleep (2);
 echo $url;
 exit;
 }
 
-
 //Moving uploaded file to uploads directory on server.
 move_uploaded_file($_FILES["file"]["tmp_name"],"uploads/" . $_FILES["file"]["name"]);
 copy("uploads/".$_FILES["file"]["name"],"uploads/src.jpg");
-
-//Condition check for redundancy of data to be added to database. 
-$check = mysql_query("SELECT * FROM `data`");
-
-while($row = mysql_fetch_array($check))
-{
-                 if($name == $row['sal'] && $firstName == $row['first_name'] && $middleName == $row['middle_name'] && 
-                  $lastName == $row['last_name'] && $institute == $row['institute'] && $city == $row['city'] && 
-                  $state == $row['state'] && $photo == $row['photo'])
-                           {
-                                $var++;
-                           }
 }
 
-//Inserting data into database after redundancy check. 
-if($var == 0)
-{
-                  mysql_query("INSERT into `data` VALUES('','$name','$firstName','$middleName','$lastName','$institute','$city','$state','$photo')");
-}
-
-}
 
 else //Else Condition	`			
 
 {
+
 	$name = $_SESSION['name'];
 	$fname = $_SESSION['fname'];
 	$mname = $_SESSION['mname'];
@@ -107,60 +86,51 @@ else //Else Condition	`
 	imagejpeg($dst_r,"uploads/cropped/$photo",$jpeg_quality);
 
 
-//Selecting the user entered data from database and replacing with the tags in odt document. 
-
-$result = mysql_query("SELECT * FROM `data` WHERE sal = '$name' AND first_name = '$fname' AND middle_name = '$mname'
- AND last_name = '$lname' AND institute = '$ins' AND city = '$city' AND state = '$state' AND photo = '$photo'");
-
-$article = $odf->setSegment('articles');
-while($row = mysql_fetch_array($result))
-{
+//$article = $odf->setSegment('articles');
 	
 		 //image
             
-                $pic = "uploads/cropped/".$row['photo'];
+                $pic = "uploads/cropped/".$photo;
                 
                 if(!file_exists($pic))
                   {
-                  $pic = "Photos/image.gif";
+                  $pic = "uploads/image.gif";
                  }
-		$article->setImage('pic',$pic,4);
-		
+	
+		$odf->setImage('pic',$pic,4);
 		//name
-                if($row['middle_name']==NULL)
-		         $article->nameArticle(" ".$row['sal']." ".$row['first_name']." ".$row['last_name']);
+                if($mname == NULL)
+		         $odf->setVars('nameArticle'," ".$name." ".$fname." ".$lname);
 		else
-                         $article->nameArticle(" ".$row['sal']." ".$row['first_name']." ".$row['middle_name']." ".$row['last_name']); 
+                         $odf->setVars('nameArticle'," ".$name." ".$fname." ".$mname." ".$lname); 
 		//department
-		if($row['city']==NULL)
-			$article->deptArticle($row['institute'].", ".$row['state']);
+		if($city == NULL)
+			$odf->setVars('deptArticle',$ins.", ".$state);
 		else
-			$article->deptArticle($row['institute'].", ".$row['city']);
+			$odf->setVars('deptArticle',$ins.", ".$city);
+
 
 	
-	$article->merge();	
-		
-}	
+//	$article->merge();	
 
-$odf->mergeSegment($article);
-
+//$odf->mergeSegment($article);
 
 // We save the file
 
 $odf -> saveToDisk("cert.odt");
 
 //copying the file to be converted
-copy("cert.odt", "../../cde-package/cde-root/home/sukhdeep/Desktop/certificate.odt");
+copy("cert.odt", "../../Convert/cde-root/home/sukhdeep/Desktop/certificate.odt");
 
 //changing Directory
-chdir('../../cde-package/cde-root/home/sukhdeep');
+chdir('../../Convert/cde-root/home/sukhdeep');
 
 //Command for conversion to PDF
 $myCommand = "./libreoffice.cde --headless -convert-to pdf Desktop/certificate.odt -outdir Desktop/";
 exec ($myCommand);
 
 
-copy("Desktop/".str_replace(".odt", ".pdf", "certificate.odt"), "../../../../Demo/test/pdf/".str_replace(".odt", ".pdf", "certificate.odt"));
+copy("Desktop/".str_replace(".odt", ".pdf", "certificate.odt"), "../../../../Demo/test.wdout.db/pdf/".str_replace(".odt", ".pdf", "certificate.odt"));
 
 
 
@@ -175,6 +145,7 @@ echo   '<html>
 	<input type="submit" value="View/Download PDF">
 	</form></p>	
 	<form action="option.php?var=manual" method = "GET">
+	<input type=hidden name=var value=manual>
 	<input type="submit" value="Generate Another Certificate">
 	</form>
 	<form action="index.html">
@@ -191,7 +162,7 @@ exit;
 <html lang="en">
 <head>
   <title>Live Image Selector</title>
-  <h1><center>Select from the image</center></h1>
+  <h1><center>Crop Image</center></h1>      <!--...........................................................CHANGE...............-->
   <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
   <script src="jcrop/jquery.min.js"></script>
   <script src="jcrop/jquery.Jcrop.js"></script>
@@ -201,12 +172,16 @@ exit;
 
 <script type="text/javascript">
 
-  $(function(){
+  $(function(){               //.......................................................................................inFunctionChange
 
     $('#cropbox').Jcrop({
+      boxWidth: 882,
+      boxHeight: 1000,
       aspectRatio: 1,
-      setSelect:   [50, 0, 600,600],
-      allowResize: false,
+      setSelect:   [50, 0, 400,400],
+      minSize: [400,400],
+      maxSize: [1200,1200],
+      allowSelect: false,
       onSelect: updateCoords
     });
 
@@ -259,7 +234,7 @@ exit;
 			<input type="hidden" id="y" name="y" />
 			<input type="hidden" id="w" name="w" />
 			<input type="hidden" id="h" name="h" />
-			<input type="submit" value="Generate Certificate" class="btn btn-large btn-inverse" />
+			<input type="submit" value="Save & Generate Certificate" class="btn btn-large btn-inverse" /><!--..........CHANGE...-->
 		</form>
 
 		<p>
