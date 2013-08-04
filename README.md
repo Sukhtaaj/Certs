@@ -12,14 +12,15 @@ SegmentIterator.php -> php file for iterating Segments
   -zip(Directory)
 	Contains PclZipProxy.php, PhpZipProxy.php, ZipInterface.php 
 
--pclzip(diectory)
+	-pclzip(Directory)
 	     Contains pclzip.lib.php
 Files in zip directory are for dealing with odt format file 
 as (.odt)  is a compressed file containing a number of files in it.
 
 --------CGS(Directory)--------
 
-Contains
+Contains 
+
 index.html -> Html file for the First Page.
 
 index.php -> php file for displaying input forms for Institute Details 
@@ -44,8 +45,11 @@ sample.zip -> sample file used for csv File upload module.
 
   -odt(Directory)-
    Contains
+     
      -base(Directory) -> File with Filled Institute details is saved in this directory.
+     
      -cert(Directory) -> Final odt Certificate file is saved in this directory.
+     
      -design(Directory) -> Contains the odt file corresponding to design selected by user.
 
   -pdf(Directory)-
@@ -56,8 +60,13 @@ sample.zip -> sample file used for csv File upload module.
 
   -uploads(Directory)-
 	  Contains files uploaded by user.
+	  
      -manual(Directory) -> Images uploaded by user are stored here.
+       
        -cropped(Directory) -> Cropped images are stored here.
+     
      -csv(Directory)
+       
        -data(Directory) -> Stores the csv data file uploaded by user
+       
        -images(Directory) -> Compressed file containing images is stored and extracted here.
