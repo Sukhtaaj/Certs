@@ -12,12 +12,13 @@ SegmentIterator.php -> php file for iterating Segments
   -zip(Directory)
 	Contains PclZipProxy.php, PhpZipProxy.php, ZipInterface.php 
 
-	  -pclzip(diectory)
+-pclzip(diectory)
 	     Contains pclzip.lib.php
 Files in zip directory are for dealing with odt format file 
 as (.odt)  is a compressed file containing a number of files in it.
 
 --------CGS(Directory)--------
+
 Contains
 index.html -> Html file for the First Page.
 
