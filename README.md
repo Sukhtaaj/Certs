@@ -1,6 +1,7 @@
 Certs
 =====
---------library(Directory)--------
+--------library(Directory)-------- 
+
 Contains 
 odf.php -> Main php file of odtphp for handling odf objects
 
@@ -11,8 +12,8 @@ SegmentIterator.php -> php file for iterating Segments
   -zip(Directory)
 	Contains PclZipProxy.php, PhpZipProxy.php, ZipInterface.php 
 
-	   -pclzip(diectory)
-	       Contains pclzip.lib.php
+	  -pclzip(diectory)
+	     Contains pclzip.lib.php
 Files in zip directory are for dealing with odt format file 
 as (.odt)  is a compressed file containing a number of files in it.
 
