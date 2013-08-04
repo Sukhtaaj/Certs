@@ -34,7 +34,6 @@ manual.php -> Displays the Image cropping tool and then saves the cropped
 csv.php -> Handles the csv file along with extracting the compressed file containing
 	   images and at the end generates the batch certificate file for all data 
 	   entries in the csv file.
-
 sample.zip -> sample file used for csv File upload module.
   
   -jcrop(Directory)-
