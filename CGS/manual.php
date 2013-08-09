@@ -1,10 +1,10 @@
-<?php session_start(); ?>
 <?php
-
+session_start();
 require_once('../library/odf.php');
-
-$base = $_SESSION["base"]; 		//Getting file name with filled Institute Details
-$odf = new odf("odt/base/$base.odt");   //Initializing the object with above file name
+$base = $_SESSION["base"]; 				//Getting file name with filled Institute Details
+$odf = new odf("odt/base/$base.odt");   		//Initializing the object with above file name
+$id = uniqid();
+$_SESSION['id'] = $id;					//To be used with filenames to differentiate simultaneous files being processed
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')  
 {
@@ -19,30 +19,27 @@ $_SESSION['city'] = $_POST["city"];
 $_SESSION['state'] = $_POST["state"];
 
 //assigning image name to variable photo.
-$photo = strtok($_FILES["file"]["name"],".");		//using strtok() to store filename without extension
+$photo = "$id".strtok($_FILES["file"]["name"],".");	//using strtok() to store filename without extension
 $_SESSION['photo'] = $photo;				//Assigning Photo variable to session vatriable
 
 /*************************************** Image Validation********************************************/
 
 // Link to the other file if any of following condition fails
-$url = "<meta http-equiv='Refresh' content='1; URL=option.php?var=manual'>"; 
+$url = "<meta http-equiv='Refresh' content='3; URL=option.php?var=manual'>"; 
 
 if($_FILES["file"]["name"] == Null)		//checks if no file is selected
-{
-echo "<center><strong>No Image Selected!</strong></center>";
-sleep (2);
-echo $url;
-exit;
-}
-
+	{
+	  echo "<center><strong>No Image Selected!</strong></center>";
+	  echo $url;
+	  exit;
+	}
 
 if($_FILES["file"]["size"] > 400144) 		//Size validation Condition(should be less than 400kb)
-{
-echo "<center><strong>Image Size Exceeded...</strong></center>";
-sleep (2);
-echo $url;
-exit;
-}
+	{
+	  echo "<center><strong>Image Size Exceeded...</strong></center>";
+	  echo $url;
+	  exit;
+	}
 
 //moving the uploaded file to directory
 move_uploaded_file($_FILES["file"]["tmp_name"],"uploads/manual/" .$photo);
@@ -52,25 +49,24 @@ $photo_path = "uploads/manual/$photo";		//storing path of uploaded photo in vari
 //Checking the type of uploaded Image file
 
 if ($_FILES["file"]["type"] == "image/gif")
-$origin = imagecreatefromgif($photo_path);
+	$origin = imagecreatefromgif($photo_path);
 
 elseif($_FILES["file"]["type"] == "image/jpeg")
-$origin = imagecreatefromjpeg($photo_path);
+	$origin = imagecreatefromjpeg($photo_path);
 
 elseif($_FILES["file"]["type"] == "image/jpg")
-$origin = imagecreatefromjpeg($photo_path);
+	$origin = imagecreatefromjpeg($photo_path);
 
 elseif($_FILES["file"]["type"] == "image/png")
-$origin = imagecreatefrompng($photo_path);
+	$origin = imagecreatefrompng($photo_path);
 
 //In case of any other format of uploaded file
 else
-{
-echo "<center><strong>Invalid Image File...</strong></center>";
-sleep (2);
-echo $url;
-exit;
-}
+	{
+	  echo "<center><strong>Invalid Image File...</strong></center>";
+	  echo $url;
+	  exit;
+	}
 
 $originWidth = imagesx($origin);   //Width of original uploaded image
 $originHeight = imagesy($origin);  //Height of original uploaded image
@@ -98,8 +94,9 @@ else
 	$city = $_SESSION['city'];
 	$state = $_SESSION['state'];
 	$photo = $_SESSION['photo'];
-
-        $targ_w = $targ_h = 500;	//Dimensions of cropped image
+	$id = $_SESSION['id'];
+        
+	$targ_w = $targ_h = 500;	//Dimensions of cropped image
 	$jpeg_quality = 100;		//Quality of cropped image
 
 	$src = "uploads/manual/src.jpg";
@@ -133,7 +130,7 @@ $article = $odf->setSegment('articles');	//Defining Segment articles( used in .o
 		else
                          $article->nameArticle(" ".$name." ".$fname." ".$mname." ".$lname); 
 		
-		//department
+		//Institute/department
 		if($city==NULL)
 			$article->deptArticle($ins.", ".$state);
 		else
@@ -142,26 +139,25 @@ $article = $odf->setSegment('articles');	//Defining Segment articles( used in .o
 
 $odf->mergeSegment($article);
 
-// We save the file
-$certName = uniqid();		//Using Function Uniqid() for unique name every File generated 
+// We save the file 
 
-$odf -> saveToDisk("odt/cert/$certName.odt"); //Saving the odt file to directory
+$odf -> saveToDisk("odt/cert/$id.odt"); //Saving the odt file to directory
 
 //copying the odt file to be converted to PDF
-	copy("odt/cert/$certName.odt", "../odt2pdf/cde-root/home/sukhdeep/Desktop/$certName.odt");
+	copy("odt/cert/$id.odt", "../odt2pdf/cde-root/home/sukhdeep/Desktop/$id.odt");
 
 //changing Directory
 	chdir('../odt2pdf/cde-root/home/sukhdeep');
 
 //Command for conversion to PDF
-	$myCommand = "./libreoffice.cde --headless --convert-to pdf:writer_pdf_Export Desktop/$certName.odt --outdir Desktop/";
+	$myCommand = "./libreoffice.cde --headless --convert-to pdf:writer_pdf_Export Desktop/$id.odt --outdir Desktop/";
 	exec ($myCommand);
 
 //Copying back the Converted File
-	copy("Desktop/".str_replace(".odt", ".pdf", "$certName.odt"), "../../../../CGS/pdf/".str_replace(".odt", ".pdf", "$certName.odt"));
+	copy("Desktop/$id.pdf", "../../../../CGS/pdf/$id.pdf");
 //Deleting unrequired files after converting and copying
-	unlink("Desktop/$certName.pdf");
-	unlink("Desktop/$certName.odt");
+	unlink("Desktop/$id.pdf");
+	unlink("Desktop/$id.odt");
 
 echo   '<html>
 	<head>
@@ -171,10 +167,10 @@ echo   '<html>
 	<body>
 	<center>	
 	<h1>Your Certificate has been Generated!</h1>
-	<form action="odt/cert/'.$certName.'.odt">
+	<form action="odt/cert/'.$id.'.odt">
 	<input class="btn btn-primary" type="submit" value="Download ODT">
 	</form>
-	<form action="pdf/'.$certName.'.pdf">
+	<form action="pdf/'.$id.'.pdf">
 	<input class="btn btn-primary" type="submit" value="View/Download PDF">
 	</form>	
 	<form action="option.php?var=manual" method = "GET">
