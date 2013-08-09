@@ -105,17 +105,21 @@ $certName = uniqid();		//Using Function Uniqid() for unique name every File gene
 $odf -> saveToDisk("odt/cert/$certName.odt"); 
 
 //copying the odt file to be converted to PDF
-copy("odt/cert/$certName.odt", "../../ODT/cde-root/home/sukhdeep/Desktop/$certName.odt");
+copy("odt/cert/$certName.odt", "../odt2pdf/cde-root/home/sukhdeep/Desktop/$certName.odt");
 
 //changing Directory
-chdir('../../ODT/cde-root/home/sukhdeep');
+chdir('../odt2pdf/cde-root/home/sukhdeep');
 
 //Command for conversion to PDF
 $myCommand = "./libreoffice.cde --headless --convert-to pdf:writer_pdf_Export Desktop/$certName.odt --outdir Desktop/";
 exec ($myCommand);
 
 //Copying the converted file to the PDF folder
-copy("Desktop/".str_replace(".odt", ".pdf", "$certName.odt"), "../../../../odtphp/CGS/pdf/".str_replace(".odt", ".pdf", "$certName.odt"));
+copy("Desktop/".str_replace(".odt", ".pdf", "$certName.odt"), "../../../../CGS/pdf/".str_replace(".odt", ".pdf", "$certName.odt"));
+//Deleting converted files after copying
+unlink("Desktop/$certName.pdf");
+unlink("Desktop/$certName.odt");
+
 
 echo   '<html>
 	<head>
