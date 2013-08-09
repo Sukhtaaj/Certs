@@ -143,25 +143,25 @@ $article = $odf->setSegment('articles');	//Defining Segment articles( used in .o
 $odf->mergeSegment($article);
 
 // We save the file
-$certName = uniqid($fname);		//Using Function Uniqid() for unique name every File generated 
+$certName = uniqid();		//Using Function Uniqid() for unique name every File generated 
 
 $odf -> saveToDisk("odt/cert/$certName.odt"); //Saving the odt file to directory
 
 //copying the odt file to be converted to PDF
-copy("odt/cert/$certName.odt", "../../ODT/cde-root/home/sukhdeep/Desktop/$certName.odt");
+	copy("odt/cert/$certName.odt", "../odt2pdf/cde-root/home/sukhdeep/Desktop/$certName.odt");
 
 //changing Directory
-chdir('../../ODT/cde-root/home/sukhdeep');
+	chdir('../odt2pdf/cde-root/home/sukhdeep');
 
 //Command for conversion to PDF
-$myCommand = "./libreoffice.cde --headless --convert-to pdf:writer_pdf_Export Desktop/$certName.odt --outdir Desktop/";
-exec ($myCommand);
+	$myCommand = "./libreoffice.cde --headless --convert-to pdf:writer_pdf_Export Desktop/$certName.odt --outdir Desktop/";
+	exec ($myCommand);
 
 //Copying back the Converted File
-copy("Desktop/".str_replace(".odt", ".pdf", "$certName.odt"), "../../../../odtphp/CGS/pdf/".str_replace(".odt", ".pdf", "$certName.odt"));
+	copy("Desktop/".str_replace(".odt", ".pdf", "$certName.odt"), "../../../../CGS/pdf/".str_replace(".odt", ".pdf", "$certName.odt"));
 //Deleting unrequired files after converting and copying
-unlink("Desktop/$certName.pdf");
-unlink("Desktop/$certName.odt");
+	unlink("Desktop/$certName.pdf");
+	unlink("Desktop/$certName.odt");
 
 echo   '<html>
 	<head>
