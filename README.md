@@ -24,7 +24,7 @@ Requirements
 
         $ unzip odtphp.zip 
    OR
-   It can be cloned by using following command in terminal:
+      It can be cloned by using following command in terminal:
 
         $ git clone https://github.com/Sukhtaaj/odtphp.git
 
