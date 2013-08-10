@@ -47,9 +47,12 @@ Requirements
         $ chmod -R 777 odt2pdf/
 
 Congratulations! You have successfully set it up.
+
 Goto 
 http://localhost/odtphp/CGS
+
 OR
+
 http://localhost/~username/odtphp/CGS (if Usermode is enabled in apache configuration)
 
 
