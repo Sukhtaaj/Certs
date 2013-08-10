@@ -10,7 +10,9 @@ As well as for Batch/Number of candidates by simply providing the CSV format fil
 Requirements 
 ------------
 1. Apache web server
-	$ sudo apt-get install apache2 (if not installed)
+
+
+        $ sudo apt-get install apache2 (if not installed)
 
 2. php interpreter
 	$ sudo apt-get install php5 (if not installed)
