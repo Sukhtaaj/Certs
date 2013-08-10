@@ -24,11 +24,12 @@ Requirements
 
         $ unzip odtphp.zip 
    OR
+      
       It can be cloned by using following command in terminal:
 
         $ git clone https://github.com/Sukhtaaj/odtphp.git
 
-In case Git is not installed then Install git using below command:
+      In case Git is not installed then Install git using below command:
 
         $ sudo apt-get install git
 
