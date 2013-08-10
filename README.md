@@ -57,7 +57,7 @@ generate certificate in an automated manner in few steps:
    Manual Entry    -> Select it for Generating Certificate for Single candidate.
    Upload Csv File -> Select it for Generating certificate for more than 1 candidate by providing their details in Csv file.
 
- 3/(i) 
+ 
     Manual Entry 
     ------------
 
@@ -80,7 +80,7 @@ generate certificate in an automated manner in few steps:
 
       And by clicking on "Goto First Page" you can again start from Design Selection Page.
 
-  3/(ii)
+
     Upload csv file
     ---------------
 
