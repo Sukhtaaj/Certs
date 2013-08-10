@@ -22,28 +22,28 @@ Requirements
 2. Place the downloaded odtphp.zip from github in /var/www and extract using
 
 
-       $ unzip odtphp.zip 
+        $ unzip odtphp.zip 
    OR
    It can be cloned by using following command in terminal:
 
-       $ git clone https://github.com/Sukhtaaj/odtphp.git
+        $ git clone https://github.com/Sukhtaaj/odtphp.git
 
 In case Git is not installed then Install git using below command:
 
-       $ sudo apt-get install git
+        $ sudo apt-get install git
 
 3. Change the permission of odtphp folder and its sub-directories to drwxrwxrwx
 
 
-       $ sudo chmod -R 777 /var/www/odtphp
+        $ sudo chmod -R 777 /var/www/odtphp
 
 4. Download the odt2pdf.tar.gz from "http://202.164.53.122/~sukhdeep/odt2pdf.tar.gz"
    Place it in /var/www/odtphp/ and and then
 
 
-       $ cd /var/www/odtphp	
-       $ tar -zxvf odt2pdf.tar.gz
-       $ chmod -R 777 odt2pdf/
+        $ cd /var/www/odtphp	
+        $ tar -zxvf odt2pdf.tar.gz
+        $ chmod -R 777 odt2pdf/
 
 Congratulations! You have successfully set it up.
 Goto 
