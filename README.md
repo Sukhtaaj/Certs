@@ -17,7 +17,7 @@ Requirements
 2. php interpreter
 
 
-       $ sudo apt-get install php5 (if not installed)
+        $ sudo apt-get install php5 (if not installed)
 
 2. Place the downloaded odtphp.zip from github in /var/www and extract using
 
