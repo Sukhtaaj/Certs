@@ -72,6 +72,46 @@ unlink("uploads/csv/$id/$file");  		//After Extracting Deleting the compressed f
 
 $csvfile = fopen("uploads/csv/data/$csv","r");	//Opening csv file in read mode
 
+//Variable initialised to trace line Number being processed
+$lineNumber = 1;
+
+//Variable initialised to trace if any error in csv file occurs
+$errorExist = 0;
+
+//Checking data of csv file
+while($result = fgetcsv($csvfile))
+{
+if(sizeof($result) != 8)
+ {
+ $error_exist = 1;
+ echo  '<h4>Incorrect number of fields in line '.$lineNumber.'</h4>';
+ }
+$lineNumber++;
+}
+
+if($errorExist == 1)
+{
+echo  '
+	<html>
+	<head>
+		<link href="style/bootstrap.min.css" rel="stylesheet" media="screen">	
+		<link href="style/style.css" rel="stylesheet" media="screen">
+	</head>
+
+	<body>
+	<center>
+	<h3>Please check if Double quotes (") or comma (,) are misplaced and follow the
+	 instructions for uploading csv file and check Sample file also. </h3>
+	<form action="option.php?var=csv" method ="GET">
+	<input type=hidden name=var value=csv>
+	<input class = "btn btn-primary" type = submit value="Resubmit the csv file">
+	</form>
+	</center>
+	</body>
+	</html>';
+exit;
+}
+
 $article = $odf->setSegment('articles');	//Defining Segment articles( used in .odt file)
 while($result = fgetcsv($csvfile))		//Fetching data in each row of csv file to array $result
 {
