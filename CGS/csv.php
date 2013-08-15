@@ -83,7 +83,7 @@ while($result = fgetcsv($csvfile))
 {
 if(sizeof($result) != 8)
  {
- $error_exist = 1;
+ $errorExist = 1;
  echo  '<h4>Incorrect number of fields in line '.$lineNumber.'</h4>';
  }
 $lineNumber++;
