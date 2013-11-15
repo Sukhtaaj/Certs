@@ -38,7 +38,7 @@ Requirements
 
         $ sudo chmod -R 777 /var/www/odtphp
 
-4. Download the odt2pdf.tar.gz from "http://202.164.53.122/~sukhdeep/odtphp/odt2pdf.tar.gz"
+4. Download the odt2pdf.tar.gz from "http://bit.ly/1dVyg61"
    Place it in /var/www/odtphp/ and and then
 
 
